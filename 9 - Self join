@@ -63,23 +63,18 @@ WHERE stopa.name = 'Craiglockhart'
 -- 10. Find the routes involving two buses that can go from Craiglockhart to Lochend. Show the bus no. and company for the first bus, the name of the stop for the transfer, and the bus no. and company for the second bus.
 select DISTINCT bus1.num, bus1.company, bus1.name, bus2.num, bus2.company from
   (SELECT DISTINCT r1.num, r1.company, s2.name from route r1
-    -- self join on service id (service id is company and bus number)
-    -- this gives me all routs for curret service id
+    -- self join on service id (service id is company and bus number); all routes for current service id
     join route r2
       ON (r1.company=r2.company AND r1.num=r2.num)
-    -- this gives me starting bus stops with name Craiglockhart
+    -- starting bus stops with name Craiglockhart
     join stops s1
       ON (r1.stop=s1.id AND s1.name='Craiglockhart')
-    -- gives me final route:
-    -- list of all the stops for all the buses
-    -- which can be reached from Craiglockhart
+    -- final route; list of all the stops for all the buses that can be reached from Craiglockhart
     join stops s2
       ON (s2.id=r2.stop)
   ) AS bus1
  JOIN
-  -- next is simillar to query above
-  -- this gives me all the stops for all the buses
-  -- which can be reached from Lochend
+  -- all the stops for all the buses that can be reached from Lochend
   (SELECT DISTINCT r1.num, r1.company, s2.name from route r1
     join route r2
       ON (r1.company=r2.company AND r1.num=r2.num)
@@ -88,8 +83,6 @@ select DISTINCT bus1.num, bus1.company, bus1.name, bus2.num, bus2.company from
     join stops s2
       ON (s2.id=r2.stop)
   ) AS bus2
-    -- join gives me full routes
-    -- with transfer stops
-    -- that can be reached from both of routes
+    -- full routes with transfer stops that can be reached from both of routes
     ON bus1.name=bus2.name
 ORDER BY bus1.num, bus1.company, bus1.name, bus2.num, bus2.company
